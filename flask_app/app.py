@@ -7,22 +7,6 @@ app = Flask(__name__)
 # Redis for tracking page visits
 r = redis.Redis(host="redis", port=6379)
 
-
-@app.route("/")
-
-def index():
-    '''
-
-    home page
-    
-    '''
-    
-
-
-
-
-
-
 @app.route("/")
 def home():
     count = r.incr("hits")

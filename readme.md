@@ -18,7 +18,7 @@ The landing page will feature links to each team member's portfolio and provide 
 - **Frontend**: HTML, CSS, JavaScript
 - **Version Control**: Git and GitHub
 - **CI/CD Tool**: GitHub Actions for automated testing and deployment
-- **Deployment Platform**: GitHub Pages (if static) or a cloud platform (GCP/AWS/Azure) if deploying a Flask app with dynamic content.
+- **Deployment Platform**: A cloud platform (GCP/AWS/Azure) content.
 
 ## Features
 
