@@ -3,252 +3,124 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
-    <title>PayVista - Empowering Seamless Money Transfers</title>
-    
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
-
+    <title>Cloud Computing Portfolios</title>
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-}
+        /* Light Mode Styles */
+        body {
+            font-family: "Poppins", sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f7f9;
+            color: #333;
+        }
 
-body {
-    font-family: 'Roboto', sans-serif;
-    line-height: 1.6;
-}
+        .hero {
+            text-align: center;
+            padding: 3rem 1rem;
+            background: linear-gradient(120deg,#2c2c2c, #a0e6ff);
+            color: #fff;
+        }
 
-.container {
-    max-width: 1200px;
-    margin: 0 auto;
-    padding: 0 20px;
-}
+        .portfolio-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 2rem;
+            padding: 2rem;
+            justify-content: center;
+        }
 
-/* Navbar */
-.navbar {
-    background-color: #004d66;
-    color: #fff;
-    padding: 20px 0;
-}
+        .card {
+            background-color: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            text-align: center;
+            width: 250px;
+            padding: 2rem 1rem;
+        }
 
-.navbar .logo {
-    font-size: 28px;
-    font-weight: 700;
-}
+        .button {
+            margin-top: 1rem;
+            display: inline-block;
+            padding: 0.5rem 1.2rem;
+            background-color: #4f9dff;
+            color: #fff;
+            border-radius: 20px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+        }
 
-.navbar .nav-links {
-    list-style: none;
-    display: flex;
-    gap: 20px;
-}
+        /* Dark Mode Styles */
+        body.dark-mode {
+            background-color: #1c1c1c;
+            color: #eaeaea;
+        }
 
-.navbar .nav-links li {
-    display: inline-block;
-}
+        .hero.dark-mode {
+            background: linear-gradient(120deg, #2c2c2c, #3e495d);
+        }
 
-.navbar .nav-links a {
-    color: #fff;
-    text-decoration: none;
-    font-weight: 500;
-}
+        .card.dark-mode {
+            background-color: #2c2c2c;
+            color: #eaeaea;
+            box-shadow: 0 4px 8px rgba(255, 255, 255, 0.1);
+        }
 
-.navbar .login-btn {
-    background-color: #ff5722;
-    padding: 10px 20px;
-    border-radius: 5px;
-    color: #fff;
-}
-
-/* Hero Section */
-.hero {
-    background-color: #004d66;
-    color: #fff;
-    padding: 100px 0;
-    text-align: center;
-}
-
-.hero-content h1 {
-    font-size: 40px;
-    margin-bottom: 20px;
-}
-
-.hero-content p {
-    font-size: 18px;
-    margin-bottom: 30px;
-}
-
-.hero .btn {
-    background-color: #ff5722;
-    padding: 15px 30px;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-/* Services Section */
-.services {
-    background-color: #f4f4f4;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.services h2 {
-    font-size: 32px;
-    margin-bottom: 40px;
-}
-
-.service-items {
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap;
-}
-
-.service-item {
-    width: 45%;
-    margin-bottom: 20px;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-}
-
-.service-item h3 {
-    font-size: 24px;
-    margin-bottom: 15px;
-}
-
-/* Partners Section */
-.partners {
-    padding: 50px 0;
-    text-align: center;
-}
-
-.partners h2 {
-    font-size: 32px;
-    margin-bottom: 40px;
-}
-
-.partners-logos img {
-    width: 150px;
-    margin: 0 15px;
-}
-
-/* Contact Section */
-.contact {
-    background-color: #004d66;
-    color: #fff;
-    padding: 50px 0;
-    text-align: center;
-}
-
-.contact h2 {
-    font-size: 32px;
-    margin-bottom: 20px;
-}
-
-.contact p {
-    font-size: 18px;
-    margin-bottom: 20px;
-}
-
-.contact .btn {
-    background-color: #ff5722;
-    padding: 15px 30px;
-    border-radius: 5px;
-    color: #fff;
-    font-weight: bold;
-    text-decoration: none;
-}
-
-/* Footer */
-.footer {
-    background-color: #002933;
-    color: #fff;
-    padding: 20px 0;
-    text-align: center;
-}
-
+        .button.dark-mode {
+            background-color: #2c2c2c;
+        }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
-    <nav class="navbar">
-        <div class="container">
-            <h1 class="logo">PayVista</h1>
-            <ul class="nav-links">
-                <li><a href="#services">Services</a></li>
-                <li><a href="#partners">Partners</a></li>
-                <li><a href="#contact">Contact Us</a></li>
-                <li><a href="#" class="login-btn">Login</a></li>
-            </ul>
-        </div>
-    </nav>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <div class="container hero-content">
-            <h1>Empowering Seamless Money Transfers Across East Africa</h1>
-            <p>Join a fast-growing fintech solution to support mobile money transfers effortlessly across borders.</p>
-            <a href="#contact" class="btn">Get Started</a>
-        </div>
-    </section>
+<div class="hero">
+    <h1>Explore the Future of Cloud Computing</h1>
+    <p>Meet Our Innovative Cloud Computing Students</p>
+    <button id="theme-toggle" style="padding: 10px; border: none; border-radius: 5px; cursor: pointer;">Toggle Dark Mode</button>
+</div>
 
-    <!-- Services Section -->
-    <section id="services" class="services">
-        <div class="container">
-            <h2>What We Offer</h2>
-            <div class="service-items">
-                <div class="service-item">
-                    <h3>Cross-border Transfers</h3>
-                    <p>Seamlessly transfer money across borders using mobile money platforms like Mpesa and Airtel Money.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Agent Support</h3>
-                    <p>Providing agents with the tools and training they need to support transactions efficiently.</p>
-                </div>
-                <div class="service-item">
-                    <h3>Real-Time Exchange Rates</h3>
-                    <p>Get accurate, real-time currency exchange rates for smoother transactions.</p>
-                </div>
-                <div class="service-item">
-                    <h3>24/7 Customer Support</h3>
-                    <p>Our support team is available 24/7 to assist you with any queries or issues.</p>
-                </div>
-            </div>
-        </div>
-    </section>
+<div class="portfolio-grid">
+    <div class="card">
+        <div class="profile-pic" style="background-image: url('student1.jpg');"></div>
+        <div class="name">Tinotenda</div>
+        <div class="tagline">Architecting Scalable Solutions</div>
+        <a href="{{ url_for('tinotenda_portfolio') }}" class="button">Explore Portfolio</a>
+    </div>
+    
+    <div class="card">
+        <div class="profile-pic" style="background-image: url('student2.jpg');"></div>
+        <div class="name">Nicholas</div>
+        <div class="tagline">Securing the Cloud Frontier</div>
+        <a href="{{ url_for('nicholas_portfolio') }}" class="button">Explore Portfolio</a>
+    </div>
+    
+    <div class="card">
+        <div class="profile-pic" style="background-image: url('student3.jpg');"></div>
+        <div class="name">Candace</div>
+        <div class="tagline">Driving Cloud Innovations</div>
+        <a href="{{ url_for('candace_portfolio') }}" class="button">Explore Portfolio</a>
+    </div>
+    
+    <div class="card">
+        <div class="profile-pic" style="background-image: url('student4.jpg');"></div>
+        <div class="name">Eddy</div>
+        <div class="tagline">Powering Cloud Transformations</div>
+        <a href="{{ url_for('eddy_portfolio') }}" class="button">Explore Portfolio</a>
+    </div>
+</div>
 
-    <!-- Partners Section -->
-    <section id="partners" class="partners">
-        <div class="container">
-            <h2>Our Partners</h2>
-            <div class="partners-logos">
-                <img src="mpesa-logo.png" alt="Mpesa">
-                <img src="airtel-money-logo.png" alt="Airtel Money">
-                <img src="partner-3.png" alt="Partner 3">
-                <img src="partner-4.png" alt="Partner 4">
-            </div>
-        </div>
-    </section>
+<script>
+    const themeToggle = document.getElementById('theme-toggle');
+    themeToggle.addEventListener('click', () => {
+        document.body.classList.toggle('dark-mode');
+        document.querySelectorAll('.hero, .card, .button').forEach(element => {
+            element.classList.toggle('dark-mode');
+        });
+    });
+</script>
 
-    <!-- Contact Section -->
-    <section id="contact" class="contact">
-        <div class="container">
-            <h2>Ready to Join?</h2>
-            <p>Contact us today and start using PayVista for your transactions.</p>
-            <a href="mailto:contact@payvista.com" class="btn">Contact Us</a>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container">
-            <p>PayVista &copy; 2024. All rights reserved.</p>
-        </div>
-    </footer>
 </body>
 </html>
