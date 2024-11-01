@@ -11,7 +11,7 @@
     :root {
         --bg-color: #f4f7f9;
         --text-color: #333;
-        --header-bg-color: #111213;
+        --header-bg-color: #1c2228;
         --header-text-color: #fff;
         --link-color: #4f9dff;
         --section-bg-color: #fff;
@@ -106,12 +106,12 @@
     }
 </style>
 </head>
-<body>
+<body class="dark-mode"> <!-- Set dark mode as default -->
 
 <div class="toggle-container">
     <!-- Dark Mode Toggle -->
     <label>
-        <input type="checkbox" id="dark-mode-toggle">
+        <input type="checkbox" id="dark-mode-toggle" checked> <!-- Keep checkbox checked -->
         <span>🌙</span>
     </label>
 </div>
@@ -119,7 +119,13 @@
 <div class="container">
     <!-- Header Section -->
     <div class="header">
-        <h1>Eddy Kubwimana</h1>
+        <div class="profile-links">
+            <a href="{{ url_for('home') }}" target="_blank">Home</a>
+            <a href="{{ url_for('tinotenda_portfolio') }}" target="_blank">Eddy</a>
+            <a href="{{ url_for('candace_portfolio') }}" target="_blank">Candace</a>
+            <a href="{{ url_for('tinotenda_portfolio') }}" target="_blank">Tinotenda</a>
+        </div>
+        <h1>Nicholas</h1>
         <p>Computer Science Student | Entrepreneur</p>
         <p>Passionate about technology, innovation, and building impactful solutions.</p>
         <div class="profile-links">
@@ -176,8 +182,8 @@
     // Dark Mode Toggle Logic
     const toggle = document.getElementById('dark-mode-toggle');
 
-    // Load the user's preference
-    if (localStorage.getItem('theme') === 'dark') {
+    // Load the user's preference, defaulting to dark mode if not set
+    if (localStorage.getItem('theme') === 'dark' || !localStorage.getItem('theme')) {
         document.body.classList.add('dark-mode');
         toggle.checked = true;
     }
@@ -195,4 +201,3 @@
 
 </body>
 </html>
-
