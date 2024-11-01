@@ -1,0 +1,3 @@
+Flask
+redis
+mysql-connector-python

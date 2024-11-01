@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Cloud Computing</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+       
+       @import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+
+        body {
+            background-color: #f4f4f9;
+            font-family: "Poppins", sans-serif;
+            font-weight: 100;
+            font-style: normal;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            border-radius: 10px;
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        h1 {
+            font-size: 3rem;
+            color: #333;
+        }
+        .form-container, .people-container {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);
+            max-width: 600px;
+            margin: 20px auto;
+        }
+        table, th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #f2f2f2;
+        }
+        .message {
+            color: blue;
+            text-align: center;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container text-center">
+        <div class="card p-5">
+            <h1>Welcome</h1>
+            <p class="lead mt-4">Total Number of Visits: <strong id="visit-count">{{ count }}</strong> times.</p>
+        </div>
+
+        <div class="form-container">
+            <h2>Add yourself </h2>
+            <form id="visitorForm">
+                <div class="form-group">
+                    <label for="firstname">First Name:</label>
+                    <input type="text" id="firstname" name="firstname" required>
+                </div>
+                <div class="form-group">
+                    <label for="lastname">Last Name:</label>
+                    <input type="text" id="lastname" name="lastname" required>
+                </div>
+                <div class="form-group">
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </div>
+            </form>
+            <p class="message" id="message"></p>
+        </div>
+
+        <div class="people-container">
+            <h2>Recent Visitors</h2>
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Registered On</th>
+                    </tr>
+                </thead>
+                <tbody id="people-list">
+                    {% for person in people %}
+                    <tr>
+                        <td>{{ person.firstname }}</td>
+                        <td>{{ person.lastname }}</td>
+                        <td>{{ person.registration_time }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <script>
+        
+        document.getElementById('visitorForm').addEventListener('submit', function(event) {
+    event.preventDefault();  
+
+    const firstname = document.getElementById('firstname').value;
+    const lastname = document.getElementById('lastname').value;
+
+    
+    fetch('/submit', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `firstname=${firstname}&lastname=${lastname}`
+    })
+    .then(response => response.json())
+    .then(data => {
+       
+        document.getElementById('message').textContent = data.message;
+
+        
+        const peopleList = document.getElementById('people-list');
+        peopleList.innerHTML = '';  
+
+        
+        if (data.people && data.people.length > 0) {
+            data.people.forEach(personArray => {
+                const row = document.createElement('tr');
+
+                console.log(personArray[1],personArray[2],personArray[3] );
+                
+                row.innerHTML = `
+                    <td>${personArray[1]}</td> 
+                    <td>${personArray[2]}</td>  
+                    <td>${personArray[3]}</td>  
+                `;
+                peopleList.appendChild(row);
+            });
+        } else {
+            
+            const emptyRow = document.createElement('tr');
+            emptyRow.innerHTML = '<td colspan="3">No people found</td>';
+            peopleList.appendChild(emptyRow);
+        }
+
+        document.getElementById('visit-count').textContent = data.count;
+
+        document.getElementById('firstname').value = '';
+        document.getElementById('lastname').value = '';
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        document.getElementById('message').textContent = 'Error submitting form. Please try again.';
+    });
+});
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
