@@ -36,7 +36,7 @@ jobs:
       - name: Deploy to GCP
         env:
           GCP_VM_IP: ${{ secrets.VM_HOST }}
-          GCP_SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY }}
+          GCP_SSH_PRIVATE_KEY: ${{ secrets.MY_SSH_KEY }}
         run: |
           # Set up SSH key for the current session
           echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
