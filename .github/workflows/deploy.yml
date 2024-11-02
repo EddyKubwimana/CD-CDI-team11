@@ -3,11 +3,11 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  
+      - master  # Change this to your main branch if it's different
 
 jobs:
   build:
-    runs-on: ubuntu-latest 
+    runs-on: ubuntu-latest
 
     steps:
       - name: Checkout code
@@ -16,8 +16,8 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'  
-      
+          python-version: '3.9'  # Adjust the Python version as necessary
+
       - name: Install dependencies
         run: |
           cd porfolio
@@ -39,14 +39,15 @@ jobs:
         env:
           GCP_VM_IP: ${{ secrets.VM_HOST }}
           GCP_SSH_PRIVATE_KEY: ${{ secrets.MY_SSH_KEY }}
+          GCP_USERNAME: ${{ secrets.VM_USER }}
         run: |
-          # Create the .ssh directory if it doesn't exist
-          mkdir -p ~/.ssh
           # Set up SSH key for the current session
+
           echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+
           # SSH into the GCP VM and pull the latest Docker image
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa USERNAME@${GCP_VM_IP} << 'EOF'
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa ${GCP_USERNAME}}@${GCP_VM_IP} << 'EOF'
             docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
             # Optional: Run the Docker container
             docker stop portfolio || true  # Stop the old container if it exists
