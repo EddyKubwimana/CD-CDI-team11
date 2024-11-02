@@ -20,6 +20,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          cd porfolio
           python -m pip install --upgrade pip
           pip install -r requirements.txt  # Ensure this file is in your repo
 
