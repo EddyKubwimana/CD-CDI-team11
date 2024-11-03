@@ -35,27 +35,25 @@ jobs:
       - name: Push Docker image
         run: docker push ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
 
-      - name: Deploy to GCP
+      - name: Google Cloud Auth
+        uses: 'google-github-actions/auth@v2'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: Set up Cloud SDK
+        uses: 'google-github-actions/setup-gcloud@v2'
+        with:
+          project_id: ${{ secrets.PROJECT_ID }}
+
+      - name: SSH into GCP VM and Deploy Docker Container
         env:
-          GCP_VM_IP: ${{ secrets.VM_HOST }}
-          GCP_SSH_PRIVATE_KEY: ${{ secrets.MY_SSH_KEY }}
-          GCP_USERNAME: ${{ secrets.VM_USER }}
+          VM_IP: ${{ secrets.VM_HOST }}
+          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
-          # Create the .ssh directory if it doesn't exist
-          mkdir -p ~/.ssh
-          
-          # Set up SSH key for the current session
-          echo "${GCP_SSH_PRIVATE_KEY}" | tr -d '\r' > ~/.ssh/google_compute_engine
-          chmod 600 ~/.ssh/google_compute_engine
-
-          # Print the length of the SSH key
-          echo "Length of the SSH private key: $(wc -c < ~/.ssh/google_compute_engine)"
-
-          # SSH into the GCP VM and pull the latest Docker image
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/google_compute_engine ${GCP_USERNAME}@${GCP_VM_IP} << 'EOF'
-            docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-            # Optional: Run the Docker container
-            docker stop portfolio || true  # Stop the old container if it exists
-            docker rm portfolio || true  # Remove the old container if it exists
-            docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-          EOF
+          gcloud compute ssh --project=${{ secrets.PROJECT_ID }} --zone=${{secrets.GCP_VM_ZONE}} --command "
+            docker pull $DOCKER_USERNAME/portfolio:latest &&
+            docker stop portfolio || true &&
+            docker rm portfolio || true &&
+            docker run -d -p 5000:5000 --name portfolio $DOCKER_USERNAME/portfolio:latest
+          " --tunnel-through-iap --ssh-key-file=$HOME/.ssh/id_rsa
