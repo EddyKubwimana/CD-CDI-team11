@@ -6,54 +6,35 @@ on:
       - master  
 
 jobs:
-  build:
+  deploy:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
 
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.9'  
-
-      - name: Install dependencies
-        run: |
-          cd porfolio
-          python -m pip install --upgrade pip
-          pip install -r requirements.txt  # Ensure this file is in your repo
-
-      - name: Build Docker image
-        run: |
-          cd porfolio
-          docker build -t ${{ secrets.DOCKER_USERNAME }}/portfolio:latest .
-
-      - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
-
-      - name: Push Docker image
-        run: docker push ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-
-      - name: Google Cloud Auth
-        uses: 'google-github-actions/auth@v2'
-        with:
-          credentials_json: '${{ secrets.GCP_SA_KEY }}'
-          project_id: ${{ secrets.PROJECT_ID }}
-
       - name: Set up Cloud SDK
         uses: 'google-github-actions/setup-gcloud@v2'
         with:
-          project_id: ${{ secrets.PROJECT_ID }}
+          project_id: ${{ secrets.PROJECT_ID }} 
+          credentials: ${{ secrets.GCP_SA_KEY }}
 
-      - name: SSH into GCP VM and Deploy Docker Container
-        env:
-          VM_IP: ${{ secrets.VM_HOST }}
-          DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
+      - name: Configure Docker to use gcloud as a credential helper
         run: |
-            gcloud compute ssh "${{ secrets.VM_USER }}@instance-20241011-150157" --project=${{ secrets.PROJECT_ID }} --zone=${{ secrets.GCP_VM_ZONE }} --command "
-              docker pull $DOCKER_USERNAME/portfolio:latest &&
-              docker stop portfolio || true &&
-              docker rm portfolio || true &&
-              docker run -d -p 5000:5000 --name portfolio $DOCKER_USERNAME/portfolio:latest
-            " --tunnel-through-iap --ssh-key-file=$HOME/.ssh/id_rsa
+          gcloud auth configure-docker
+
+      - name: Build Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
+
+      - name: Push Docker image to GCR
+        run: |
+          docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
+
+      - name: Deploy to Cloud Run
+        run: |
+          gcloud run deploy $SERVICE_NAME \
+            --image gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest \
+            --platform managed \
+            --region us-east1 \
+            --allow-unauthenticated \
+            --port 5000  # Set the container to listen on port 5000
