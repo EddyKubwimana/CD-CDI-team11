@@ -32,6 +32,8 @@ jobs:
       - name: Push Docker image to GCR
         run: |
           
+          cd porfolio
+          
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
           docker tag portfolio:latest gcr.io/$PROJECT_ID/portfolio:latest
