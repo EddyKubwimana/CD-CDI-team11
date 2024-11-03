@@ -22,22 +22,21 @@ jobs:
         run: |
           gcloud auth configure-docker
 
-      - name: Build Docker Image 
+      - name: Build Docker image
         run: |
-          cd porfolio
+          cd portfolio  # Ensure this is the correct directory
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
-          gcr.io/utopian-courier-435409-r6/portfolio:latest 
 
-      - name: Push Docker image to Google Cloud
+      - name: Push Docker image to GCR
         run: |
-          cd porfolio
+          cd portfolio  # Ensure this is the correct directory
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
-      - name: Deploy to the images to GCP
+      - name: Deploy to Cloud Run
         run: |
-          gcloud run deploy $SERVICE_NAME \
+          gcloud run deploy portfolio \  # Replace with your actual service name
             --image gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest \
             --platform managed \
             --region us-east1 \
             --allow-unauthenticated \
-            --port 5000  # Set the container to listen on port 5000
+            --port 5000
