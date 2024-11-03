@@ -22,15 +22,15 @@ jobs:
         run: |
           gcloud auth configure-docker
 
-      - name: Debug: List files and directories
+      - name: List files and directories
         run: |
-          cd portfolio
+          cd porfolio
           pwd  # Print the current working directory
           ls -la  # List files in the current directory
 
       - name: Build Docker image
         run: |
-          cd portfolio  # Ensure this is the correct directory
+          cd porfolio  # Ensure this is the correct directory
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
 
       - name: Push Docker image to GCR
