@@ -26,13 +26,14 @@ jobs:
         run: |
           cd porfolio
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
+          gcr.io/utopian-courier-435409-r6/portfolio:latest 
 
       - name: Push Docker image to Google Cloud
         run: |
           cd porfolio
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
-      - name: Deploy to Cloud Run
+      - name: Deploy to the images to GCP
         run: |
           gcloud run deploy $SERVICE_NAME \
             --image gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest \
