@@ -51,9 +51,9 @@ jobs:
           VM_IP: ${{ secrets.VM_HOST }}
           DOCKER_USERNAME: ${{ secrets.DOCKER_USERNAME }}
         run: |
-          gcloud compute ssh "${{secrets.VM_USER}}@instance-20241011-150157" --project=${{secrets.PROJECT_ID}} --zone=${{secrets.GCP_VM_ZONE}}--command "
-            docker pull $DOCKER_USERNAME/portfolio:latest &&
-            docker stop portfolio || true &&
-            docker rm portfolio || true &&
-            docker run -d -p 5000:5000 --name portfolio $DOCKER_USERNAME/portfolio:latest
-          " --tunnel-through-iap --ssh-key-file=$HOME/.ssh/id_rsa
+            gcloud compute ssh "${{ secrets.VM_USER }}@instance-20241011-150157" --project=${{ secrets.PROJECT_ID }} --zone=${{ secrets.GCP_VM_ZONE }} --command "
+              docker pull $DOCKER_USERNAME/portfolio:latest &&
+              docker stop portfolio || true &&
+              docker rm portfolio || true &&
+              docker run -d -p 5000:5000 --name portfolio $DOCKER_USERNAME/portfolio:latest
+            " --tunnel-through-iap --ssh-key-file=$HOME/.ssh/id_rsa
