@@ -24,10 +24,12 @@ jobs:
 
       - name: Build Docker image
         run: |
+          cd porfolio
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
 
       - name: Push Docker image to GCR
         run: |
+          cd porfolio
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
       - name: Deploy to Cloud Run
