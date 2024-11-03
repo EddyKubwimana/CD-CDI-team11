@@ -22,12 +22,12 @@ jobs:
         run: |
           gcloud auth configure-docker
 
-      - name: Build Docker image
+      - name: Build Docker Image 
         run: |
           cd porfolio
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
 
-      - name: Push Docker image to GCR
+      - name: Push Docker image to Google Cloud
         run: |
           cd porfolio
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
