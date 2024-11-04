@@ -18,24 +18,26 @@ The landing page will feature links to each team member's portfolio and provide 
 - **Frontend**: HTML, CSS, JavaScript
 - **Version Control**: Git and GitHub
 - **CI/CD Tool**: GitHub Actions for automated testing and deployment
-- **Deployment Platform**: A cloud platform (GCP/AWS/Azure) content.
+- **Deployment Platform**: A cloud platform GCP content.
 
 ## Features
 
 - **Landing Page**: A central Flask-powered page with links to each team member's individual portfolio.
 - **Individual Portfolios**: Responsive, personal portfolio pages for Eddy, Tinotenda, Nicholas, and Candace.
-- **Automated Deployment**: CI/CD workflow to automatically test and deploy changes to the landing page and individual portfolios.
+- **Automated Deployment**: CI/CD workflow to automatically test and deploy changes to the docker container of GCP VM
 
 ## Project Structure
 
 ```plaintext
 .
-├── app/
-│   ├── static/
+├── porfolio/
 │   ├── templates/
-│   ├── __init__.py
-│   └── routes.py
+│   ├── app
+│   ├── requirements.txt
+│   ├── Dockerfile
+
 ├── .github/workflows/
-│   └── ci-cd.yml
-├── README.md
-└── run.py
+│   └── deploy.yml
+│── Docker-compose.yml
+└─ README.md
+
