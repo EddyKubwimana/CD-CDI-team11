@@ -44,23 +44,29 @@ jobs:
         run: |
           # Create the SSH directory
           mkdir -p ~/.ssh
-          
+
           # Write the SSH private key to the file
           echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          
+
           # Add the VM to known hosts to prevent SSH from prompting
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
-          
+
           # SSH into the GCP VM and execute the deployment commands
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kubwimanaeddy1@${GCP_VM_IP} << EOF
-            # Add user to the docker group
+            # Add user to the docker group if not already added
             sudo usermod -aG docker kubwimanaeddy1
-            # Refresh group membership (requires re-login; using 'newgrp' command as a workaround)
-            newgrp docker << INNER_EOF
-              docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-              docker stop portfolio || true  # Stop the old container if it exists
-              docker rm portfolio || true    # Remove the old container if it exists
-              docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-            INNER_EOF
+            
+            # Restart shell to recognize group change (might require a re-login, so next time this would be automatic)
+            # Pull the latest Docker image
+            docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+
+            # Stop and remove the old container if it exists
+            docker stop portfolio || true
+            docker rm portfolio || true
+
+            # Run the Docker container
+            docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
           EOF
+
+                
