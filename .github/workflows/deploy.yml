@@ -1,41 +1,56 @@
-name: CI/CD Pipeline
+
+name: Deploy to GCP
 
 on:
   push:
     branches:
-      - master  
+      - main  # or any branch you want to trigger the deployment from
 
 jobs:
-  deploy:
+  build-and-deploy:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v2
+    - name: Checkout code
+      uses: actions/checkout@v2
 
-      - name: Set up Cloud SDK
-        uses: 'google-github-actions/setup-gcloud@v2'
-        with:
-          project_id: ${{ secrets.PROJECT_ID }} 
+    - name: Set up Google Cloud SDK
+      uses: google-github-actions/setup-gcloud@v1
+      with:
+        service_account_key: ${{ secrets.GCP_SA_KEY }}
+        project_id: your-gcp-project-id
 
-      - name: Authenticate Docker with GCR
-        run: |
-          echo ${{ secrets.GCP_SA_KEY }} | gcloud auth activate-service-account --key-file=-
-          gcloud auth configure-docker --quiet
+    - name: Authenticate Docker with GCR
+      run: |
+        echo ${{ secrets.GCP_SA_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
 
-      - name: Build Docker image
-        run: |
-          cd portfolio
+    - name: Build Docker image
+      run: |
+          cd porfolio
           docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
 
-      - name: Push Docker image to GCR
-        run: |
-          docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
+    - name: Push Docker image to GCR
+      run: |
+        docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
-      - name: Deploy to Cloud Run
-        run: |
-          gcloud run deploy portfolio \  # Replace with your actual service name
-            --image gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest \
-            --platform managed \
-            --region us-east1 \
-            --allow-unauthenticated \
-            --port 5000
+    - name: SSH into VM and Deploy
+      uses: appleboy/ssh-action@v0.1.5
+      with:
+        host: your-vm-external-ip
+        username: your-vm-username
+        key: ${{ secrets.GCP_VM_KEY }}
+        script: |
+          # Authenticate with GCR
+          gcloud auth configure-docker
+          
+          # Pull the latest image
+          docker pull gcr.io/your-gcp-project-id/your-image-name:latest
+          
+          # Stop the old container if it's running
+          docker stop your-container-name || true
+          
+          # Remove the old container
+          docker rm your-container-name || true
+          
+          # Run the new container
+          docker run -d --name your-container-name -p 80:80 gcr.io/your-gcp-project-id/your-image-name:latest
