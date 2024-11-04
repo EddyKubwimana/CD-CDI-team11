@@ -20,27 +20,18 @@ jobs:
 
       - name: Configure Docker to use gcloud
         run: |
-           gcloud auth configure-docker --quiet
-           gcloud auth configure-docker us-docker.pkg.dev --quiet
+          gcloud auth configure-docker --quiet
+          gcloud auth configure-docker us-docker.pkg.dev --quiet
 
-      - name: List files and directories
+      - name: Build Docker image
         run: |
           cd porfolio
-          pwd  # Print the current working directory
-          ls -la  # List files in the current directory
+          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
 
       - name: Push Docker image to GCR
         run: |
-          
-          cd porfolio
-          
           docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
 
-          docker tag portfolio:latest gcr.io/$PROJECT_ID/portfolio:latest
-
-          docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
-          docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
- 
       - name: Deploy to Cloud Run
         run: |
           gcloud run deploy portfolio \  # Replace with your actual service name
@@ -49,7 +40,3 @@ jobs:
             --region us-east1 \
             --allow-unauthenticated \
             --port 5000
-
-
-
-      
