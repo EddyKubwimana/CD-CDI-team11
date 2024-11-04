@@ -52,11 +52,15 @@ jobs:
           # Add the VM to known hosts to prevent SSH from prompting
           ssh-keyscan -H ${{ secrets.VM_HOST }} >> ~/.ssh/known_hosts
           
-          # SSH into the GCP VM and pull the latest Docker image
+          # SSH into the GCP VM and execute the deployment commands
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kubwimanaeddy1@${GCP_VM_IP} << EOF
-            docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
-            # Optional: Run the Docker container
-            docker stop portfolio || true  # Stop the old container if it exists
-            docker rm portfolio || true  # Remove the old container if it exists
-            docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+            # Add user to the docker group
+            sudo usermod -aG docker kubwimanaeddy1
+            # Refresh group membership (requires re-login; using 'newgrp' command as a workaround)
+            newgrp docker << INNER_EOF
+              docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+              docker stop portfolio || true  # Stop the old container if it exists
+              docker rm portfolio || true    # Remove the old container if it exists
+              docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+            INNER_EOF
           EOF
