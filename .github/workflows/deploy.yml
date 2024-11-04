@@ -3,7 +3,7 @@ name: CI/CD Pipeline
 on:
   push:
     branches:
-      - master  # Change this to your main branch if it's different
+      - main  
 
 jobs:
   build:
@@ -16,7 +16,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v2
         with:
-          python-version: '3.9'  # Adjust the Python version as necessary
+          python-version: '3.9' 
 
       - name: Install dependencies
         run: |
