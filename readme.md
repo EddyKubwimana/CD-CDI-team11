@@ -1,5 +1,8 @@
 # Team Portfolio Landing Page with CI/CD
 
+[Link to the live project](http://34.35.25.140:5000/)
+
+
 ## Overview
 
 This project is a collaborative effort by **Eddy**, **Tinotenda**, **Nicholas**, and **Candace** to create a **landing page** using Flask that links to each team member's individual portfolio. The primary goal is to showcase our understanding of Continuous Integration (CI) and Continuous Deployment (CD) by automating the build, testing, and deployment process for this project.
