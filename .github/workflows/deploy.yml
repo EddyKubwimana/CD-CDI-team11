@@ -1,56 +1,50 @@
-
-name: Deploy to GCP
+name: CI/CD Pipeline
 
 on:
   push:
     branches:
-      - main  # or any branch you want to trigger the deployment from
+      - master  # Change this to your main branch if it's different
 
 jobs:
-  build-and-deploy:
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v2
+      - name: Checkout code
+        uses: actions/checkout@v2
 
-    - name: Set up Google Cloud SDK
-      uses: google-github-actions/setup-gcloud@v1
-      with:
-        service_account_key: ${{ secrets.GCP_SA_KEY }}
-        project_id: your-gcp-project-id
+      - name: Set up Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: '3.9'  # Adjust the Python version as necessary
 
-    - name: Authenticate Docker with GCR
-      run: |
-        echo ${{ secrets.GCP_SA_KEY }} | docker login -u _json_key --password-stdin https://gcr.io
-
-    - name: Build Docker image
-      run: |
+      - name: Install dependencies
+        run: |
           cd porfolio
-          docker build -t gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest .
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt  # Ensure this file is in your repo
+      - name: Build Docker image
+        run: |
+          docker build -t ${{ secrets.DOCKER_USERNAME }}/portfolio:latest .
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-    - name: Push Docker image to GCR
-      run: |
-        docker push gcr.io/${{ secrets.PROJECT_ID }}/portfolio:latest
+      - name: Push Docker image
+        run: docker push ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
 
-    - name: SSH into VM and Deploy
-      uses: appleboy/ssh-action@v0.1.5
-      with:
-        host: your-vm-external-ip
-        username: your-vm-username
-        key: ${{ secrets.GCP_VM_KEY }}
-        script: |
-          # Authenticate with GCR
-          gcloud auth configure-docker
-          
-          # Pull the latest image
-          docker pull gcr.io/your-gcp-project-id/your-image-name:latest
-          
-          # Stop the old container if it's running
-          docker stop your-container-name || true
-          
-          # Remove the old container
-          docker rm your-container-name || true
-          
-          # Run the new container
-          docker run -d --name your-container-name -p 80:80 gcr.io/your-gcp-project-id/your-image-name:latest
+      - name: Deploy to GCP
+        env:
+          GCP_VM_IP: ${{ secrets.VM_HOST }}
+          GCP_SSH_PRIVATE_KEY: ${{ secrets.GCP_VM_KEY }}
+        run: |
+          # Set up SSH key for the current session
+          echo "${GCP_SSH_PRIVATE_KEY}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+          # SSH into the GCP VM and pull the latest Docker image
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/id_rsa kubwimanaeddy1@${GCP_VM_IP} << 'EOF'
+            docker pull ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+            # Optional: Run the Docker container
+            docker stop portfolio || true  # Stop the old container if it exists
+            docker rm portfolio || true  # Remove the old container if it exists
+            docker run -d -p 5000:5000 --name portfolio ${{ secrets.DOCKER_USERNAME }}/portfolio:latest
+          EOF
