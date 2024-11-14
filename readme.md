@@ -20,7 +20,7 @@ The landing page will feature links to each team member's portfolio and provide 
 - **Backend**: Flask (Python)
 - **Frontend**: HTML, CSS, JavaScript
 - **Version Control**: Git and GitHub
-- **CI/CD Tool**: GitHub Actions for automated testing and deployment
+- **CI/CD Tool**: GitHub Actions for automated testing and deployme
 - **Deployment Platform**: A cloud platform GCP content.
 
 ## Features
