@@ -37,6 +37,11 @@ def eddy_portfolio():
 def oheneba_portfolio():
     return render_template("oheneba.html")
 
+@app.route("/extra")
+
+def extra_porfolio():
+    pass
+
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000)
